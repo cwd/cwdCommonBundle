@@ -25,12 +25,6 @@ abstract class AbstractBaseServiceTestCase extends DoctrineTestCase
      */
     protected $primaryId;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->loadFixturesFromDirectory(__DIR__ . '/DataFixtures');
-    }
-
     /**
      * @return string|int
      */
