@@ -1,0 +1,22 @@
+{
+    "name": "cwd/common-bundle",
+    "description": "Some Abstract Classes which are used in many CWD Projects",
+    "type": "symfony-bundle",
+    "keywords": ["symfony", "bundle"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ludwig Ruderstaller",
+            "email": "lr@cwd.at"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php" : ">=5.6.0",
+        "symfony/framework-bundle": "~2.7|~3.0",
+    },
+    "autoload": {
+        "psr-4": { "Cwd\\CommonBundle\\": "" }
+    }
+
+}
