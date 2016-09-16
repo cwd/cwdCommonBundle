@@ -163,23 +163,6 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
     }
 
     /**
-     * @param array $options
-     *
-     * @return GridBuilderInterface
-     *
-     * @throws \BadMethodCallException
-     */
-    protected function getGrid(array $options = [])
-    {
-        if (!interface_exists(GridBuilderInterface::class)) {
-            throw new \BadMethodCallException('Bootgrid Bundle not present');
-            return null;
-        }
-
-        return $this->get('cwd_bootgrid.grid.factory')->create($this->getOption('gridService'), $options);
-    }
-
-    /**
      * @return LoggerInterface
      */
     protected function getLogger()

@@ -9,6 +9,7 @@
  */
 namespace Cwd\CommonBundle\Controller;
 
+use Cwd\BootgridBundle\Grid\GridBuilderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -25,7 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractCrudController extends AbstractBaseController
 {
     /**
-     * @Route("/create")
      * @Method({"GET", "POST"})
      *
      * @param Request $request
@@ -40,11 +40,21 @@ abstract class AbstractCrudController extends AbstractBaseController
     }
 
     /**
-     * @Route("/list")
-     * @Route("/")
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function ajaxDataAction(Request $request)
+    {
+        $grid = $this->getGrid($request->request->all());
+        $data = $grid->getData();
+
+        return new JsonResponse($data);
+    }
+
+    /**
      * @Method({"GET"})
      * @Template("MailingOwlAdminBundle:Grid:list.html.twig")
-     *
      *
      * @return array
      */
@@ -63,6 +73,23 @@ abstract class AbstractCrudController extends AbstractBaseController
     }
 
     /**
+     * @param array $options
+     *
+     * @return GridBuilderInterface
+     *
+     * @throws \BadMethodCallException
+     */
+    protected function getGrid(array $options = [])
+    {
+        if (!interface_exists(GridBuilderInterface::class)) {
+            throw new \BadMethodCallException('Bootgrid Bundle not present');
+            return null;
+        }
+
+        return $this->get('cwd_bootgrid.grid.factory')->create($this->getOption('gridService'), $options);
+    }
+
+    /**
      * @return array
      */
     public function indexAction()
@@ -70,19 +97,6 @@ abstract class AbstractCrudController extends AbstractBaseController
         return array();
     }
 
-    /**
-     * Grid action
-     * @Method({"GET"})
-     *
-     * @Route("/grid")
-     * @return Response
-     */
-    public function gridAction()
-    {
-        $this->getGrid()->get();
-
-        return $this->getGrid()->execute();
-    }
 
     /**
      * @param string $field
