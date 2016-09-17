@@ -117,6 +117,7 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
                 );
             } catch (\Exception $e) {
                 $this->flashError('Error while saving Data: '.$e->getMessage());
+                $this->getLogger()->addError($e->getMessage());
             }
         }
 

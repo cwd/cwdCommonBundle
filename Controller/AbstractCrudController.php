@@ -60,15 +60,12 @@ abstract class AbstractCrudController extends AbstractBaseController
      */
     public function listAction()
     {
-        $this->getGrid()->get();
-
         return array(
+            'grid'        => $this->getGrid(),
             'icon'        => $this->getOption('icon'),
             'title'       => $this->getOption('title'),
             'gridRoute'   => $this->getOption('gridRoute'),
             'createRoute' => $this->getOption('createRoute'),
-            'gridOptions' => $this->getOption('gridOptions'),
-
         );
     }
 
