@@ -30,6 +30,8 @@ abstract class TestCase extends WebTestCase
      * @param UserInterface $user
      * @param array         $options
      * @param array         $server
+     *
+     * @return string
      */
     protected function loginUser($firewallName, UserInterface $user, array $options = array(), array $server = array())
     {
@@ -47,5 +49,7 @@ abstract class TestCase extends WebTestCase
 
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
+
+        return $token;
     }
 }
