@@ -11,6 +11,7 @@ namespace Cwd\CommonBundle\Tests;
 
 use Doctrine\ORM\QueryBuilder;
 use Cwd\CommonBundle\Tests\Repository\DoctrineTestCase;
+use FOS\UserBundle\Model\UserInterface;
 
 /**
  * Class Cwd\Common\AbstractBaseService
@@ -57,8 +58,11 @@ abstract class AbstractBaseServiceTestCase extends DoctrineTestCase
         return $object;
     }
 
+    /**
+     * @
+     */
     public function testFindNotFound() {
-        $this->setExpectedException($this->service->getOption('notFoundExceptionClass'));
+        $this->expectException($this->service->getOption('notFoundExceptionClass'));
         $this->service->find('foo');
     }
 
@@ -70,7 +74,7 @@ abstract class AbstractBaseServiceTestCase extends DoctrineTestCase
         $this->service->remove($object);
         $this->service->getEntityManager()->clear();
 
-        $this->setExpectedException($this->service->getOption('notFoundExceptionClass'));
+        $this->expectException($this->service->getOption('notFoundExceptionClass'));
         $object = $this->service->find($this->primaryId);
     }
 
@@ -80,9 +84,11 @@ abstract class AbstractBaseServiceTestCase extends DoctrineTestCase
         $this->assertInstanceOf('Doctrine\ORM\EntityRepository', $this->service->getRepository());
     }
 
-    protected function getUser($pid = 1)
-    {
-        return $this->container->get('mailingowl.service.user')->find($pid);
-    }
+    /**
+     * @param int $pid
+     *
+     * @return UserInterface
+     */
+    abstract protected function getUser($pid = 1);
 
 }
