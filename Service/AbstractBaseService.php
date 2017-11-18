@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManager;
 use Cwd\CommonBundle\Exception\BaseException;
 use Cwd\CommonBundle\Options\ValidatedOptionsTrait;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Persisters\PersisterException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -158,7 +159,7 @@ abstract class AbstractBaseService
             $this->getEntityManager()->persist($object);
         } catch (\Exception $e) {
             $this->getLogger()->warn('Object could not be saved', (array) $e);
-            throw new PersistanceException('Object could not be stored - '.$e->getMessage(), null, $e);
+            throw new PersisterException('Object could not be stored - '.$e->getMessage(), null, $e);
         }
 
         return true;
