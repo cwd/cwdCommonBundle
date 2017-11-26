@@ -16,6 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Class Timestampable.
  *
  * @author  Ludwig Ruderstaller <lr@cwd.at>
+ * @deprecated Only use when using DoctrineAnnotation!
  */
 trait Timestampable
 {

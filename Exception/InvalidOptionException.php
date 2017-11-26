@@ -11,7 +11,6 @@ namespace Cwd\CommonBundle\Exception;
 
 /**
  * Abstract Class AbstractBaseException
- * @package MailingOwl\Service\Exception
  * @author Ludwig Ruderstaler <lr@cwd.at>
  */
 class InvalidOptionException extends AbstractBaseException
