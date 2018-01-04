@@ -13,6 +13,8 @@ use Cwd\BootgridBundle\Grid\GridBuilderInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Cwd\CommonBundle\Options\ValidatedOptionsInterface;
 use Cwd\CommonBundle\Options\ValidatedOptionsTrait;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,6 +31,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 abstract class AbstractBaseController extends Controller implements ValidatedOptionsInterface
 {
     use ValidatedOptionsTrait;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * @var LoggerInterface
@@ -56,7 +63,7 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
         ));
 
         $resolver->setRequired(array(
-            'entityService',
+            'entityManager',
             'entityFormType',
             'gridService',
             'icon',
@@ -74,7 +81,7 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
     {
         $this->checkModelClass($crudObject);
         try {
-            $this->getService()->remove($crudObject);
+            $this->getManager()->remove($crudObject);
             $this->flashSuccess('Data successfully removed');
         } catch (EntityNotFoundException $e) {
             $this->flashError('Object with this ID not found ('.$request->get('id').')');
@@ -105,10 +112,10 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 if ($persist) {
-                    $this->getService()->persist($crudObject);
+                    $this->getManager()->persist($crudObject);
                 }
 
-                $this->getService()->flush();
+                $this->getManager()->flush();
 
                 $this->flashSuccess($this->getOption('successMessage'));
 
@@ -150,9 +157,9 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
     /**
      * @return BaseService
      */
-    protected function getService()
+    protected function getManager()
     {
-        return $this->get($this->getOption('entityService'));
+        return $this->get($this->getOption('entityManager'));
     }
 
     /**
@@ -162,7 +169,7 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
      */
     protected function getNewEntity()
     {
-        return $this->getService()->getNew();
+        return $this->getManager()->getNew();
     }
 
     /**
@@ -170,10 +177,6 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
      */
     protected function getLogger()
     {
-        if ($this->logger === null) {
-            $this->logger = $this->get('logger');
-        }
-
         return $this->logger;
     }
 
