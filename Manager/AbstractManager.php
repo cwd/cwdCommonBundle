@@ -254,7 +254,9 @@ abstract class AbstractManager
             return $obj;
         } catch (\Exception $e) {
             if (null !== $exceptionClass) {
-                throw new $exceptionClass();
+                throw $this->createNotFoundException(sprintf('Entity with ID %s not found', $pid), 0, $e);
+            } else {
+                throw new \Exception(sprintf('Entity with ID %s not found', $pid), 0, $e);
             }
         }
     }
