@@ -134,6 +134,7 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
             'icon'  => $this->getOption('icon'),
             'redirectRoute' => $this->getOption('redirectRoute'),
             'redirectParameter' => $this->getOption('redirectParameter'),
+            'create' => $persist,
         ));
     }
 
