@@ -9,6 +9,9 @@
  */
 namespace Cwd\CommonBundle\Controller;
 
+use Cwd\CommonBundle\Controller\Traits\FancyGridTrait;
+use Cwd\CommonBundle\Controller\Traits\HandlerTrait;
+use Cwd\CommonBundle\Controller\Traits\LegacyTrait;
 use Cwd\FancyGridBundle\Grid\GridBuilderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -22,108 +25,12 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @package Cwd\CommonBundle\Controller
  * @author  Ludwig Ruderstaller <lr@cwd.at>
+ * @deprecated - Use the individual Traits
  */
 abstract class AbstractCrudController extends AbstractBaseController
 {
-    /**
-     * @Method({"GET", "POST"})
-     *
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     */
-    public function createAction(Request $request)
-    {
-        $object = $this->getNewEntity();
-
-        return $this->formHandler($object, $request, true);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @Route("/list/data")
-     * @Method({"GET"})
-     *
-     * @return JsonResponse
-     */
-    public function ajaxDataAction(Request $request)
-    {
-        $options = [
-            'filter' => urldecode($request->get('filter', '')),
-            'page' => $request->get('page', 1),
-            'sortField' => $request->get('sort'),
-            'sortDir' => $request->get('dir'),
-        ];
-
-        $grid = $this->getGrid($options);
-        $data = $grid->getData();
-
-        return new JsonResponse($data);
-    }
-
-    /**
-     * @Method({"GET"})
-     * @Template("MailingOwlAdminBundle:Grid:list.html.twig")
-     *
-     * @return array
-     */
-    public function listAction()
-    {
-        return array(
-            'grid'        => $this->getGrid(),
-            'icon'        => $this->getOption('icon'),
-            'title'       => $this->getOption('title'),
-            'gridRoute'   => $this->getOption('gridRoute'),
-            'createRoute' => $this->getOption('createRoute'),
-        );
-    }
-
-    /**
-     * @param array $options
-     *
-     * @return GridBuilderInterface
-     *
-     * @throws \BadMethodCallException
-     */
-    protected function getGrid(array $options = [])
-    {
-        if (!interface_exists(GridBuilderInterface::class)) {
-            throw new \BadMethodCallException('FancyGrid Bundle not present');
-            return null;
-        }
-
-        return $this->get('cwd_fancygrid.grid.factory')->create($this->getOption('gridService'), $options);
-    }
-
-    /**
-     * @return array
-     */
-    public function indexAction()
-    {
-        return array();
-    }
+    use FancyGridTrait;
+    use LegacyTrait;
 
 
-    /**
-     * @param string $field
-     * @param mixed  $crudObject
-     * @param bool   $state
-     *
-     * @return JsonResponse
-     */
-    protected function toggleHandler($field, $crudObject, $state)
-    {
-        $field = sprintf('set%s', ucfirst($field));
-        if (!method_exists($crudObject, $field)) {
-            return new JsonResponse(array('error' => true, 'message' => sprintf('Field %s not found', $field)));
-        }
-
-        $state = ($state == 'true') ? true : false;
-
-        $crudObject->$field($state);
-        $this->getService()->flush();
-
-        return new JsonResponse(array('error' => false, 'message' => sprintf('State saved', $field)));
-    }
 }

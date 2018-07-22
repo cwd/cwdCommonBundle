@@ -10,6 +10,7 @@
 namespace Cwd\CommonBundle\Controller;
 
 use Cwd\BootgridBundle\Grid\GridBuilderInterface;
+use Cwd\CommonBundle\Controller\Traits\HandlerTrait;
 use Doctrine\ORM\EntityNotFoundException;
 use Cwd\CommonBundle\Options\ValidatedOptionsInterface;
 use Cwd\CommonBundle\Options\ValidatedOptionsTrait;
@@ -67,74 +68,6 @@ abstract class AbstractBaseController extends Controller implements ValidatedOpt
             'entityFormType',
             'gridService',
             'icon',
-        ));
-    }
-
-    /**
-     * @param mixed   $crudObject
-     * @param Request $request
-     *
-     * @Method({"GET", "DELETE"})
-     * @return RedirectResponse|null
-     */
-    protected function deleteHandler($crudObject, Request $request)
-    {
-        $this->checkModelClass($crudObject);
-        try {
-            $this->getManager()->remove($crudObject);
-            $this->flashSuccess('Data successfully removed');
-        } catch (EntityNotFoundException $e) {
-            $this->flashError('Object with this ID not found ('.$request->get('id').')');
-        } catch (\Exception $e) {
-            $this->flashError('Unexpected Error: '.$e->getMessage());
-        }
-
-        $redirectRoute = $this->getOption('redirectRoute');
-        if ($redirectRoute !== null) {
-            return $this->redirect($this->generateUrl($redirectRoute, $this->getOption('redirectParameter')));
-        }
-    }
-
-    /**
-     * @param mixed   $crudObject
-     * @param Request $request
-     * @param bool    $persist
-     * @param array   $formOptions
-     *
-     * @return RedirectResponse|Response
-     */
-    protected function formHandler($crudObject, Request $request, $persist = false, $formOptions = array())
-    {
-        $this->checkModelClass($crudObject);
-        $form = $this->createForm($this->getOption('entityFormType'), $crudObject, $formOptions);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                if ($persist) {
-                    $this->getManager()->persist($crudObject);
-                }
-
-                $this->getManager()->flush();
-
-                $this->flashSuccess($this->getOption('successMessage'));
-
-                return $this->redirect(
-                    $this->generateUrl($this->getOption('redirectRoute'), $this->getOption('redirectParameter'))
-                );
-            } catch (\Exception $e) {
-                $this->flashError('Error while saving Data: '.$e->getMessage());
-                $this->getLogger()->addError($e->getMessage());
-            }
-        }
-
-        return $this->render($this->getOption('formTemplate'), array(
-            'form'  => $form->createView(),
-            'title' => $this->getOption('title'),
-            'icon'  => $this->getOption('icon'),
-            'redirectRoute' => $this->getOption('redirectRoute'),
-            'redirectParameter' => $this->getOption('redirectParameter'),
-            'create' => $persist,
         ));
     }
 
