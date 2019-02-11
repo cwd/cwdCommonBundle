@@ -16,7 +16,7 @@ use Cwd\CommonBundle\Options\ValidatedOptionsInterface;
 use Cwd\CommonBundle\Options\ValidatedOptionsTrait;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @package Cwd\CommonBundle\Controller
  * @author  Ludwig Ruderstaller <lr@cwd.at>
  */
-abstract class AbstractBaseController extends Controller implements ValidatedOptionsInterface
+abstract class AbstractBaseController extends AbstractController implements ValidatedOptionsInterface
 {
     use ValidatedOptionsTrait;
 
