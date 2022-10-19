@@ -9,7 +9,7 @@
  */
 namespace Cwd\CommonBundle\Manager;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Cwd\CommonBundle\Exception\BaseException;
 use Cwd\CommonBundle\Options\ValidatedOptionsTrait;
