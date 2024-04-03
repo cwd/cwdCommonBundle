@@ -215,6 +215,11 @@ abstract class AbstractManager
      */
     public function getEntityManager()
     {
+        $entityManager = $this->managerRegistry->getManagerForClass($this->getOption('modelName'));
+        if (!$entityManager->isOpen()) {
+            $this->managerRegistry->resetManager();
+        }
+
         return $this->managerRegistry->getManagerForClass($this->getOption('modelName'));
     }
 
