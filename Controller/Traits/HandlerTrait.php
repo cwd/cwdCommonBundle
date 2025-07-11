@@ -99,6 +99,7 @@ trait HandlerTrait
             'redirectRoute' => $this->getOption('redirectRoute'),
             'redirectParameter' => $this->getOption('redirectParameter'),
             'create' => $persist,
+            'object' => $crudObject,
         ));
     }
 
